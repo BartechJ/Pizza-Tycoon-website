@@ -59,7 +59,7 @@ const select = {
       console.log('new Product:', thisProduct);
     }
   }
-  const app = {
+  const app = { // eslint-disable-line no-unused-vars
     initMenu: function(){
       const testProduct = new Product();
       console.log('testProduct:', testProduct);

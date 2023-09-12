@@ -95,7 +95,6 @@ body {
   display: inline-block;
   border-width: 1px;
   border-style: solid;
-  padding: 12px;
   text-decoration: none;
   text-transform: uppercase;
   text-align: center;
@@ -118,7 +117,6 @@ body {
   display: inline-block;
   border-width: 1px;
   border-style: solid;
-  padding: 12px;
   text-decoration: none;
   text-transform: uppercase;
   text-align: center;
@@ -450,5 +448,3 @@ input, select {
   margin: 0 6px;
   padding: 0;
 }
-
-/*# sourceMappingURL=style.css.map */

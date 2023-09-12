@@ -85,6 +85,7 @@ const select = {
       thisProduct.formInputs = thisProduct.form.querySelectorAll(select.all.formInputs);
       thisProduct.cartButton = thisProduct.element.querySelector(select.menuProduct.cartButton);
       thisProduct.priceElem = thisProduct.element.querySelector(select.menuProduct.priceElem);
+      thisProduct.imageWrapper = thisProduct.element.querySelector(select.menuProduct.imageWrapper);
     }
    
   
@@ -155,12 +156,24 @@ const select = {
           // Check if the option is selected in the form data
           const optionSelected = formData[paramId] && formData[paramId].includes(optionId);
     
-          // If the option is selected and not the default option, increase the price by the option's price
+          // Find the corresponding image element
+          const imageElement = thisProduct.imageWrapper.querySelector(`.${paramId}-${optionId}`);
+    
+          if (imageElement) {
+            // If the image element exists, check if the option is selected
+            if (optionSelected) {
+              // If the option is selected, add the 'active' class to the image
+              imageElement.classList.add(classNames.menuProduct.imageVisible);
+            } else {
+              // If the option is not selected, remove the 'active' class from the image
+              imageElement.classList.remove(classNames.menuProduct.imageVisible);
+            }
+          }
+          
+          // Calculate the price based on selected options
           if (optionSelected && !option.default) {
             price += option.price;
           }
-    
-          // If the option is not selected and is the default option, decrease the price by the option's price
           if (!optionSelected && option.default) {
             price -= option.price;
           }

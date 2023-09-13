@@ -93,7 +93,7 @@ const select = {
       const thisProduct = this;
   
       /* find the clickable trigger (the element that should react to clicking) */
-      const clickableTrigger = thisProduct.element.querySelector('.product__name'); // eslint-disable-line no-unused-vars
+      
   
       /* START: add an event listener to the clickable trigger on the click event */
       thisProduct.accordionTrigger.addEventListener('click', function (event) {

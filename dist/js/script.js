@@ -181,11 +181,12 @@
       thisProduct.cartButton.addEventListener("click", function (event) {
         event.preventDefault();
         thisProduct.processOrder();
+        thisProduct.addToCart();
       });
     }
     processOrder() {
       const thisProduct = this;
-
+      if (thisProduct.amountWidget && thisProduct.amountWidget.input){
       // Convert form data to an object structure, e.g., { sauce: ['tomato'], toppings: ['olives', 'redPeppers'] }
       const formData = utils.serializeFormToObject(thisProduct.form);
       console.log("formData", formData);
@@ -193,6 +194,7 @@
       // Set the price to the default price
       let price = thisProduct.data.price;
 
+      
       // For every category (param)...
       for (let paramId in thisProduct.data.params) {
         // Determine param value, e.g., paramId = 'toppings', param = { label: 'Toppings', type: 'checkboxes'... }
@@ -236,11 +238,14 @@
           }
         }
       }
-
+      const totalPrice = price * thisProduct.amountWidget.value;
       // Update the calculated price in the HTML
-      price *= thisProduct.amountWidget.value;
-      thisProduct.priceElem.innerHTML = price;
+      
+      thisProduct.priceSingle = price;
+      thisProduct.priceElem.innerHTML = totalPrice;
+      
     }
+  }
     initAmountWidget() {
       const thisProduct = this;
       thisProduct.amountWidgetElem.addEventListener("updated", function () {
@@ -249,7 +254,73 @@
 
       thisProduct.amountWidget = new AmountWidget(thisProduct.amountWidgetElem);
     }
+
+    addToCart() {
+      const thisProduct = this;
+      const productSummary = thisProduct.prepareCartProduct();
+      app.cart.add(productSummary);
+    }
+
+    prepareCartProduct() {
+      const thisProduct = this;
+    
+      // Calculate the total price based on priceSingle and quantity
+      const totalProductPrice = thisProduct.priceSingle * thisProduct.amountWidget.value;
+    
+      const productSummary = {
+        id: thisProduct.id,
+        name: thisProduct.data.name,
+        amount: thisProduct.amountWidget.value,
+        priceSingle: thisProduct.priceSingle,
+        price: totalProductPrice,
+        params: this.prepareCartProductParams(),
+      };
+    
+      console.log('adding product to cart', productSummary);
+      return productSummary;
+    }
+
+    prepareCartProductParams() {
+      const thisProduct = this;
+
+  const formData = utils.serializeFormToObject(thisProduct.form);
+  const params = {}; // Declare params as an object, not an array
+
+  // For every category (param)...
+  for (let paramId in thisProduct.data.params) {
+    // Determine param value, e.g., paramId = 'toppings', param = { label: 'Toppings', type: 'checkboxes'... }
+    const param = thisProduct.data.params[paramId];
+
+    // Create category param in params const eg. params = { ingredients: { name: 'Ingredients', options: {}}}
+    params[paramId] = {
+      label: param.label,
+      options: {}
+    };
+
+    // For every option in this category
+    for (let optionId in param.options) {
+      const option = param.options[optionId];
+      const optionSelected = formData[paramId] && formData[paramId].includes(optionId);
+
+      if (optionSelected) {
+        // Option is selected, add it to the options object
+        params[paramId].options[optionId] = option.label;
+      }
+    }
   }
+
+  // Now assign the params object to the product summary
+  thisProduct.params = params;
+
+  return params;
+      }
+      
+      
+      
+    }
+
+    
+  
 
   class AmountWidget {
     constructor(element) {
@@ -353,6 +424,12 @@
 
       thisCart.dom.wrapper = element;
       thisCart.dom.toggleTrigger = thisCart.dom.wrapper.querySelector(select.cart.toggleTrigger);
+    }
+
+    add(menuProduct){
+      //const thisCart = this;
+
+      console.log('adding product', menuProduct);
     }
   }
   const app = {

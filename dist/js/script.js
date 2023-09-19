@@ -427,13 +427,14 @@
       thisCart.dom.toggleTrigger = thisCart.dom.wrapper.querySelector(select.cart.toggleTrigger);
       thisCart.dom.productList = thisCart.dom.wrapper.querySelector(select.cart.productList);
     }
-
     add(menuProduct){
       //const thisCart = this;
       const thisCart = this;
       console.log('adding product', menuProduct);
+      const cartProduct = new CartProduct(menuProduct, thisCart.dom.productList);
 
       
+      thisCart.products.push(cartProduct);
       /* generate html based on template */
       const generatedHTML = templates.cartProduct(menuProduct);
       /* create element using utils.createElementFromHTML */
@@ -442,8 +443,51 @@
       thisCart.dom.productList = thisCart.dom.wrapper.querySelector(select.cart.productList);
       /* add element to menu */
       thisCart.dom.productList.appendChild(thisCart.element);
+
+      thisCart.products.push(new CartProduct(menuProduct, thisCart.dom.productList));
+      console.log('thisCart.products', thisCart.products);
     }
   }
+
+  class CartProduct {
+    constructor(menuProduct, element) {
+      const thisCartProduct = this;
+  
+      // Assign properties based on menuProduct data
+      thisCartProduct.id = menuProduct.id;
+      thisCartProduct.name = menuProduct.name;
+      thisCartProduct.price = menuProduct.price;
+      thisCartProduct.priceSingle = menuProduct.priceSingle;
+      thisCartProduct.amount = menuProduct.amount;
+      thisCartProduct.params = menuProduct.params;
+      
+      
+      // Get DOM elements
+      thisCartProduct.getElements(element);
+  
+      console.log("CartProduct:", menuProduct);
+    }
+  
+    getElements(element) {
+      const thisCartProduct = this;
+  
+      thisCartProduct.dom = {};
+      thisCartProduct.dom.wrapper = element;
+      thisCartProduct.dom.amountWidget = thisCartProduct.dom.wrapper.querySelector(
+        select.cartProduct.amountWidget
+      );
+      thisCartProduct.dom.price = thisCartProduct.dom.wrapper.querySelector(
+        select.cartProduct.price
+      );
+      thisCartProduct.dom.edit = thisCartProduct.dom.wrapper.querySelector(
+        select.cartProduct.edit
+      );
+      thisCartProduct.dom.remove = thisCartProduct.dom.wrapper.querySelector(
+        select.cartProduct.remove
+      );
+    }
+  }
+
   const app = {
     // eslint-disable-line no-unused-vars
     initMenu: function () {

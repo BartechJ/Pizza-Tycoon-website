@@ -136,6 +136,7 @@
       thisProduct.amountWidgetElem = thisProduct.element.querySelector(
         select.menuProduct.amountWidget
       );
+
     }
 
     initAccordion() {
@@ -424,12 +425,23 @@
 
       thisCart.dom.wrapper = element;
       thisCart.dom.toggleTrigger = thisCart.dom.wrapper.querySelector(select.cart.toggleTrigger);
+      thisCart.dom.productList = thisCart.dom.wrapper.querySelector(select.cart.productList);
     }
 
     add(menuProduct){
       //const thisCart = this;
-
+      const thisCart = this;
       console.log('adding product', menuProduct);
+
+      
+      /* generate html based on template */
+      const generatedHTML = templates.cartProduct(menuProduct);
+      /* create element using utils.createElementFromHTML */
+      thisCart.element = utils.createDOMFromHTML(generatedHTML);
+      /* find menu container */
+      thisCart.dom.productList = thisCart.dom.wrapper.querySelector(select.cart.productList);
+      /* add element to menu */
+      thisCart.dom.productList.appendChild(thisCart.element);
     }
   }
   const app = {
